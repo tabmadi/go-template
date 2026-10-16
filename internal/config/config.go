@@ -15,10 +15,9 @@ type Config struct {
 // New creates a Config with default settings and optional LOG_LEVEL env override (DEBUG/INFO/WARN/ERROR).
 func New() *Config {
 	cfg := &Config{
-		LogLevel: slog.LevelInfo, // Default log level
+		LogLevel: slog.LevelInfo,
 	}
 
-	// Check for LOG_LEVEL environment variable
 	if logLevel := os.Getenv("LOG_LEVEL"); logLevel != "" {
 		switch strings.ToUpper(logLevel) {
 		case "DEBUG":

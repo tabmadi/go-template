@@ -1,156 +1,92 @@
-# 🚀 Go Template
+# Go Template
 
-[![Go Version](https://img.shields.io/github/go-mod/go-version/TheRealZurvan/go-template)](https://golang.org/doc/devel/release.html)
-[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![Go Report Card](https://goreportcard.com/badge/github.com/TheRealZurvan/go-template)](https://goreportcard.com/report/github.com/TheRealZurvan/go-template)
-[![mise](https://img.shields.io/badge/mise-managed-blue.svg)](https://mise.jdx.dev)
-[![lefthook](https://img.shields.io/badge/lefthook-enabled-green.svg)](https://github.com/evilmartians/lefthook)
-[![golangci-lint](https://img.shields.io/badge/golangci--lint-enabled-brightgreen.svg)](https://golangci-lint.run/)
-[![act](https://img.shields.io/badge/act-CI_simulation-blueviolet.svg)](https://github.com/nektos/act)
+A template for a Go application. It follows the [Standard Go Project Layout](https://github.com/golang-standards/project-layout), lints with every `golangci-lint` linter enabled, and builds a static binary. It starts from [github-project-template](https://github.com/tabmadi/github-project-template), so it has the same hooks, CI gate, and documentation convention.
 
-This is a modern GitHub template repository for Go projects. Use this template to create a new Go application with a
-standardized structure, automated tooling, and best practices built-in.
+## Stack
 
-## ✨ Features
+| Tool | Owns |
+| --- | --- |
+| [Go](https://go.dev) | Build, run, and test |
+| [golangci-lint](https://golangci-lint.run) | Lint and format |
+| [mise](https://mise.jdx.dev) | Tool versions and tasks |
+| [lefthook](https://github.com/evilmartians/lefthook) | Git hooks |
+| [cocogitto](https://docs.cocogitto.io) | Conventional Commits checks |
+| [rumdl](https://github.com/rvben/rumdl) | Markdown lint |
+| [gitleaks](https://github.com/gitleaks/gitleaks) | Secret scan |
+| [Renovate](https://docs.renovatebot.com) | Updates to the pinned versions |
 
-- ⚡ **High Performance**: Optimized build configuration with cross-compilation support and size optimization flags.
-- 🐹 **Go**: Modern Go version with module support and following Effective Go guidelines.
-- 🔧 **Modern Tooling**: Pre-configured with **mise** for tool and task management, **golangci-lint** for code quality, *
-  *Lefthook** for Git hooks, and **act** for local CI simulation.
-- 📁 **Structured**: Adopts the [Standard Go Project Layout](https://github.com/golang-standards/project-layout) for a
-  clean and organized codebase.
+## Getting started
 
-## 🚀 Quick Start
+1. Install [mise](https://mise.jdx.dev/getting-started.html).
+2. Clone the repo and install the tools, modules, and hooks:
 
-### Prerequisites
-
-- [mise](https://mise.jdx.dev) - A multi-language version manager and task runner.
-- [Go](https://golang.org/dl/) - Programming language (managed by mise).
-- [act](https://github.com/nektos/act) - Run your GitHub Actions locally.
-
-### Installation
-
-1. **Clone the repository**:
    ```bash
-   git clone https://github.com/TheRealZurvan/go-template.git
+   git clone git@github.com:tabmadi/go-template.git
    cd go-template
-   ```
-
-2. **Setup environment**:
-   ```bash
-   # Install all required tools using mise
    mise install
-   
-   # Set up the project (download dependencies and install git hooks)
    mise run setup
    ```
 
-## 🏃‍♂️ Usage
+3. Run the app:
 
-Instructions on how to run the project.
+   ```bash
+   mise run run
+   ```
 
-```bash
-# Run the application directly (development)
-mise run run
+## Tasks
 
-# Build and run the production binary
-mise run build
-./bin/app
-```
+| Task | Does |
+| --- | --- |
+| `mise run setup` | Downloads the modules and installs the git hooks |
+| `mise run run` | Runs the app from source |
+| `mise run build` | Builds a static, stripped binary at `bin/app` |
+| `mise run start` | Builds and runs the binary |
+| `mise run format` | Applies every formatter and every safe lint fix |
+| `mise run lint` | Runs `lint:go`, `lint:md`, and `lint:secrets` |
+| `mise run test` | Runs the tests |
+| `mise run check` | Runs `lint` and `test`. Run it before you finish a change |
+| `mise run ci` | Runs `check` and `build`, exactly as CI does. The `pre-push` hook runs it too |
 
-## 🛠️ Development
+## Layout
 
-### Available Scripts
-
-| Script            | Description                                 |
-|-------------------|---------------------------------------------|
-| `mise run setup`  | Set up the project dependencies             |
-| `mise run clean`  | Clean build artifacts                       |
-| `mise run format` | Format the code and auto-fix linting issues |
-| `mise run lint`   | Run linter (golangci-lint)                  |
-| `mise run test`   | Run tests                                   |
-| `mise run build`  | Build the project                           |
-| `mise run run`    | Run the application                         |
-| `mise run act`    | Simulate CI locally with act                |
-
-### 🧹 Code Quality
-
-We use **golangci-lint** for linting and formatting with 40+ linters:
-
-```bash
-# Check for linting issues
-mise run lint
-
-# Auto-fix linting issues and format code
-mise run format
-```
-
-### 🪝 Git Hooks & Conventional Commits
-
-This project uses **Lefthook** for Git hooks and follows **Conventional Commits**.
-
-- **Pre-commit**: Formats code and runs golangci-lint.
-- **Commit-msg**: Validates commit message format.
-- **Pre-push**: Final lint and test checks.
-
-#### Conventional Commits Example:
-
-```bash
-# ✅ Valid commit messages
-git commit -m "feat: add user authentication"
-git commit -m "fix: resolve memory leak"
-```
-
-## 📁 Project Structure
-
-```
+```text
 .
-├── cmd/                # Application entry points
-│   └── app/            # Main application
-├── internal/           # Private code (business logic, config)
-├── scripts/            # Helper scripts
-├── bin/                # Built binaries (created by build)
-├── .github/            # GitHub Actions and act configuration
-├── mise.toml           # Mise configuration
-└── README.md           # You are here! 📍
+├── cmd/app/          The entry point. It wires the parts together
+├── internal/
+│   ├── config/       Configuration from defaults and environment variables
+│   └── foo/          Sample package with structured logging
+├── docs/adr/         The decisions: foundations, doc conventions, toolchain
+├── .golangci.yml     The linter and formatter set
+├── .mise.toml        Tool pins and tasks
+└── .lefthook.yml     Git hooks
 ```
 
-## ⚙️ Configuration
+## Configuration
 
-| File               | Purpose               | Key Features                                  |
-|--------------------|-----------------------|-----------------------------------------------|
-| **mise.toml**      | Mise task runner      | Task definitions, environment variables       |
-| **.lefthook.yml**  | Git hooks             | Pre-commit linting, automated quality checks  |
-| **.golangci.yml**  | Linting configuration | 40+ linters, formatting rules, quality checks |
-| **go.mod**         | Go module definition  | Module path, Go version requirements          |
-| **.tool-versions** | Tool version manager  | Consistent versions for mise                  |
+| Variable | Description | Default |
+| --- | --- | --- |
+| `LOG_LEVEL` | One of `DEBUG`, `INFO`, `WARN`, or `ERROR` | `INFO` |
 
-## 🤝 Contributing
+## Using this template
 
-Contributions are welcome! Please follow these steps:
+1. Create a repository from this template on GitHub.
+2. Change the module path in `go.mod` and in the imports to your own.
+3. Replace `internal/foo` with your own packages.
+4. Update the contacts in `SECURITY.md` and the copyright line in `LICENSE`.
+5. Install the [Renovate app](https://github.com/apps/renovate) on the new repository.
 
-1. Fork the project
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (**Conventional Commits**)
-4. Push to the branch
-5. Open a Pull Request
+## Decisions
 
-## 🔒 Security
+The ADRs in [docs/adr](docs/adr/README.md) record every decision and the reason for it. [ADR-0001](docs/adr/0001-documentation-conventions.md) is the house style for all text.
 
-Please see [SECURITY.md](SECURITY.md) for our security policy and how to report security vulnerabilities.
+## Contributing
 
-## 📄 License
+Follow the [Code of Conduct](CODE_OF_CONDUCT.md). Commit messages follow [Conventional Commits](https://www.conventionalcommits.org), and the `commit-msg` hook checks them. Run `mise run check` before you open a pull request.
 
-This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENSE) file for details.
+## Security
 
-## 🙏 Acknowledgments
+To report a vulnerability, follow [SECURITY.md](SECURITY.md).
 
-- [Go](https://golang.org/) for the amazing programming language
-- [golangci-lint](https://golangci-lint.run/) for comprehensive code quality checks
-- [mise](https://mise.jdx.dev/) for tool and task management
-- [Lefthook](https://github.com/evilmartians/lefthook) for fast and reliable Git hooks
-- [act](https://github.com/nektos/act) for local CI simulation
+## License
 
----
-
-**Happy coding! 🎉** If you find this template useful, please give it a ⭐️
+Apache License 2.0. See [LICENSE](LICENSE).

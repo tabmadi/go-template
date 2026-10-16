@@ -6,7 +6,7 @@ import (
 	"log/slog"
 	"os"
 
-	"github.com/TheRealZurvan/go-template/internal/config"
+	"github.com/tabmadi/go-template/internal/config"
 )
 
 // Foo performs example operations with structured logging.

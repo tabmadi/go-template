@@ -12,9 +12,11 @@
 *.swo
 
 # Environment variable files
-.env
 .env*
 !.env.example
 
 # Build files
 bin/
+
+# Planned work stays local
+*.local.md

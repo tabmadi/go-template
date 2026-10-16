@@ -4,8 +4,8 @@ package main
 import (
 	"context"
 
-	"github.com/TheRealZurvan/go-template/internal/config"
-	"github.com/TheRealZurvan/go-template/internal/foo"
+	"github.com/tabmadi/go-template/internal/config"
+	"github.com/tabmadi/go-template/internal/foo"
 )
 
 func main() {
