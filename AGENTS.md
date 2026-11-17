@@ -20,8 +20,9 @@ Every text follows the Simple English profile in [ADR-0001](docs/adr/0001-docume
 
 ## Working in the repo
 
-- Run every command as `mise run <task>`. A bare `go` or `golangci-lint` call resolves from `PATH` at an unpinned version.
-- `golangci-lint` is the arbiter. `mise run format` applies its fixes. Fix the code, or add a `//nolint:<linter>` with a reason on the one line.
+- Work inside the dev shell: run `nix develop`, or allow direnv. Then run every task as `just <recipe>`. A bare `go` or `golangci-lint` outside the shell resolves from `PATH` at an unpinned version.
+- `golangci-lint` is the arbiter. `just format` applies its fixes. Fix the code, or add a `//nolint:<linter>` with a reason on the one line.
 - Everything here is inherited by every generated project. Add a dependency only when the template itself needs it.
-- Before you finish a change, run `mise run check`.
+- A module dependency changes `vendorHash` in `flake.nix`. Update it in the same change. `nix build` prints the new value.
+- Before you finish a change, run `just check`. `just ci` runs the full sandboxed gate that CI runs.
 - Commit messages are a Conventional Commits title only, with no body. Never push unless asked to.

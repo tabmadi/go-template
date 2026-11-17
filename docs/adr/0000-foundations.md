@@ -36,8 +36,8 @@ A generated project inherits these ADRs. So an ADR is written for the engineer w
 - `cmd/` holds entry points only. Business logic lives in `internal/`.
 - Only `internal/config` reads environment variables.
 - An error is wrapped with context, as `fmt.Errorf("...: %w", err)`, and is never discarded.
-- Logs use `log/slog` with a context. No global logger. `(CI: lint:go)`
+- Logs use `log/slog` with a context. No global logger. `(CI: lint-go)`
 - Tests are table-driven and live next to the code, as `*_test.go`.
-- A `//nolint` names one linter and gives a reason. `(CI: lint:go)`
+- A `//nolint` names one linter and gives a reason. `(CI: lint-go)`
 - Every ADR carries a `Status`, a one-sentence `Decides` line, and a flat `Rules` section.
 - Planned work lives in an untracked `*.local.md` file. No committed file links to one.

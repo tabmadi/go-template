@@ -8,8 +8,9 @@ A template for a Go application. It follows the [Standard Go Project Layout](htt
 | --- | --- |
 | [Go](https://go.dev) | Build, run, and test |
 | [golangci-lint](https://golangci-lint.run) | Lint and format |
-| [mise](https://mise.jdx.dev) | Tool versions and tasks |
-| [lefthook](https://github.com/evilmartians/lefthook) | Git hooks |
+| [Nix](https://nixos.org) with flakes | Tool versions, the dev shell, the app package, and the sandboxed checks |
+| [just](https://just.systems) | Tasks |
+| [git-hooks.nix](https://github.com/cachix/git-hooks.nix) | Git hooks |
 | [cocogitto](https://docs.cocogitto.io) | Conventional Commits checks |
 | [rumdl](https://github.com/rvben/rumdl) | Markdown lint |
 | [gitleaks](https://github.com/gitleaks/gitleaks) | Secret scan |
@@ -17,35 +18,37 @@ A template for a Go application. It follows the [Standard Go Project Layout](htt
 
 ## Getting started
 
-1. Install [mise](https://mise.jdx.dev/getting-started.html).
-2. Clone the repo and install the tools, modules, and hooks:
+1. Install [Nix](https://nixos.org/download) and enable flakes. Optionally, install [direnv](https://direnv.net) with [nix-direnv](https://github.com/nix-community/nix-direnv) to enter the dev shell on `cd`.
+2. Clone the repo and enter the dev shell. The first entry downloads every tool and installs the git hooks:
 
    ```bash
    git clone git@github.com:tabmadi/go-template.git
    cd go-template
-   mise install
-   mise run setup
+   nix develop
    ```
 
 3. Run the app:
 
    ```bash
-   mise run run
+   just run
    ```
+
+To build the release binary without entering the shell, run `nix build`. It writes `result/bin/app`.
 
 ## Tasks
 
-| Task | Does |
+| Recipe | Does |
 | --- | --- |
-| `mise run setup` | Downloads the modules and installs the git hooks |
-| `mise run run` | Runs the app from source |
-| `mise run build` | Builds a static, stripped binary at `bin/app` |
-| `mise run start` | Builds and runs the binary |
-| `mise run format` | Applies every formatter and every safe lint fix |
-| `mise run lint` | Runs `lint:go`, `lint:md`, and `lint:secrets` |
-| `mise run test` | Runs the tests |
-| `mise run check` | Runs `lint` and `test`. Run it before you finish a change |
-| `mise run ci` | Runs `check` and `build`, exactly as CI does. The `pre-push` hook runs it too |
+| `just setup` | Builds the dev shell, downloads the modules, and installs the git hooks |
+| `just run` | Runs the app from source |
+| `just build` | Builds a static, stripped binary at `bin/app` |
+| `just start` | Builds and runs the binary |
+| `just clean` | Deletes the build output |
+| `just format` | Applies every formatter and every safe lint fix |
+| `just lint` | Runs `lint-go`, `lint-md`, and `lint-secrets` |
+| `just test` | Runs the tests |
+| `just check` | Runs `lint` and `test`. Run it before you finish a change |
+| `just ci` | Runs `nix flake check`, exactly what CI runs: the package with its tests and every linter. The `pre-push` hook runs it too |
 
 ## Layout
 
@@ -57,8 +60,10 @@ A template for a Go application. It follows the [Standard Go Project Layout](htt
 │   └── foo/          Sample package with structured logging
 ├── docs/adr/         The decisions: foundations, doc conventions, toolchain
 ├── .golangci.yml     The linter and formatter set
-├── .mise.toml        Tool pins and tasks
-└── .lefthook.yml     Git hooks
+├── flake.nix         The dev shell, the app package, the git hooks, and the checks
+├── flake.lock        The pinned nixpkgs and inputs
+├── justfile          Tasks
+└── .envrc            Enters the dev shell through direnv
 ```
 
 ## Configuration
@@ -81,7 +86,7 @@ The ADRs in [docs/adr](docs/adr/README.md) record every decision and the reason 
 
 ## Contributing
 
-Follow the [Code of Conduct](CODE_OF_CONDUCT.md). Commit messages follow [Conventional Commits](https://www.conventionalcommits.org), and the `commit-msg` hook checks them. Run `mise run check` before you open a pull request.
+Follow the [Code of Conduct](CODE_OF_CONDUCT.md). Commit messages follow [Conventional Commits](https://www.conventionalcommits.org), and the `commit-msg` hook checks them. Run `just check` before you open a pull request.
 
 ## Security
 
