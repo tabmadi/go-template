@@ -23,8 +23,8 @@
       "format_on_save": "on",
       "formatter": {
         "external": {
-          "command": "biome",
-          "arguments": ["format", "--stdin-file-path={buffer_path}"]
+          "command": "dprint",
+          "arguments": ["fmt", "--stdin", "{buffer_path}"]
         }
       }
     },
@@ -32,8 +32,8 @@
       "format_on_save": "on",
       "formatter": {
         "external": {
-          "command": "biome",
-          "arguments": ["format", "--stdin-file-path={buffer_path}"]
+          "command": "dprint",
+          "arguments": ["fmt", "--stdin", "{buffer_path}"]
         }
       }
     },
@@ -66,8 +66,8 @@
       "format_on_save": "on",
       "formatter": {
         "external": {
-          "command": "taplo",
-          "arguments": ["fmt", "-"]
+          "command": "dprint",
+          "arguments": ["fmt", "--stdin", "{buffer_path}"]
         }
       }
     },
@@ -75,8 +75,8 @@
       "format_on_save": "on",
       "formatter": {
         "external": {
-          "command": "yamlfmt",
-          "arguments": ["-conf", ".config/yamlfmt.yaml", "-in"]
+          "command": "dprint",
+          "arguments": ["fmt", "--stdin", "{buffer_path}"]
         }
       }
     }
