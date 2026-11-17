@@ -38,7 +38,7 @@ in
         3. Run `nix develop`. It downloads the tools and installs the git hooks.
         4. Replace `internal/foo` with your own packages.
         5. Rewrite `README.md` for this project.
-        6. Update the contacts in `SECURITY.md` and the copyright line in `LICENSE`.
+        6. Update the contacts in `.github/SECURITY.md` and the copyright line in `LICENSE`.
         7. Install the Renovate app on the new repository.
       '';
     };

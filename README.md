@@ -59,18 +59,30 @@ Open the folder in Zed, and run `direnv allow` once. Zed suggests its Nix extens
 
 ```text
 .
+├── .config/
+│   ├── gitleaks.toml Secret scan rules
+│   ├── rumdl.toml    Markdown rules
+│   └── taplo.toml    TOML format rules
+├── .github/          Issue forms, the CI workflow, Renovate, SECURITY.md, and CODE_OF_CONDUCT.md
+├── .zed/             Zed project settings and tasks
 ├── cmd/app/          The entry point. It wires the parts together
 ├── internal/
 │   ├── config/       Configuration from defaults and environment variables
 │   └── foo/          Sample package with structured logging
 ├── docs/adr/         The decisions of the project: foundations, doc conventions, toolchain
 ├── template/         What only the template needs: its contract, checks, and outputs
+├── .envrc            Enters the dev shell through direnv
 ├── .golangci.yml     The linter and formatter set
+├── .justfile         Tasks
+├── .yamlfmt.yaml     YAML format rules
+├── biome.json        JSON format rules
+├── cog.toml          Commit types
 ├── flake.nix         The dev shell, the app package, the git hooks, and the checks
 ├── flake.lock        The pinned nixpkgs and inputs
-├── .zed/             Zed project settings and tasks
-├── justfile          Tasks
-└── .envrc            Enters the dev shell through direnv
+├── go.mod
+├── AGENTS.md
+├── README.md
+└── LICENSE
 ```
 
 ## Configuration
@@ -94,7 +106,7 @@ Then follow the steps that it prints:
 3. Run `nix develop`. It downloads the tools and installs the git hooks.
 4. Replace `internal/foo` with your own packages.
 5. Rewrite this README with the template skeleton from [readme-template](https://github.com/tabmadi/readme-template).
-6. Update the contacts in `SECURITY.md` and the copyright line in `LICENSE`.
+6. Update the contacts in `.github/SECURITY.md` and the copyright line in `LICENSE`.
 7. Install the [Renovate app](https://github.com/apps/renovate) on the new repository.
 
 ### With the GitHub template button
@@ -112,11 +124,11 @@ The ADRs in [docs/adr](docs/adr/README.md) record every decision and the reason 
 
 ## Contributing
 
-Follow the [Code of Conduct](CODE_OF_CONDUCT.md). Commit messages follow [Conventional Commits](https://www.conventionalcommits.org), and the `commit-msg` hook checks them. Run `just check` before you open a pull request.
+Follow the [Code of Conduct](.github/CODE_OF_CONDUCT.md). Commit messages follow [Conventional Commits](https://www.conventionalcommits.org), and the `commit-msg` hook checks them. Run `just check` before you open a pull request.
 
 ## Security
 
-To report a vulnerability, follow [SECURITY.md](SECURITY.md).
+To report a vulnerability, follow [SECURITY.md](.github/SECURITY.md).
 
 ## License
 
