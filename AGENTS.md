@@ -6,7 +6,8 @@ This guide is for any coding agent that works in this repo. `AGENTS.md` is the o
 
 ## Read first
 
-- [ADR-0000](docs/adr/0000-foundations.md): the layout and the Go conventions.
+- If a `template/` folder exists, read `template/AGENTS.md` before anything else.
+- [ADR-0000](docs/adr/0000-foundations.md): the layout, the Go conventions, and the recipe contract.
 - [docs/adr/README.md](docs/adr/README.md): the ADR index. To check a convention, grep the `Rules` sections first.
 
 ## Write in Simple English
@@ -22,7 +23,6 @@ Every text follows the Simple English profile in [ADR-0001](docs/adr/0001-docume
 
 - Work inside the dev shell: run `nix develop`, or allow direnv. Then run every task as `just <recipe>`. A bare `go` or `golangci-lint` outside the shell resolves from `PATH` at an unpinned version.
 - `golangci-lint` is the arbiter. `just format` applies its fixes. Fix the code, or add a `//nolint:<linter>` with a reason on the one line.
-- Everything here is inherited by every generated project. Add a dependency only when the template itself needs it.
 - A module dependency changes `vendorHash` in `flake.nix`. Update it in the same change. `nix build` prints the new value.
 - Before you finish a change, run `just check`. `just ci` runs the full sandboxed gate that CI runs.
 - Commit messages are a Conventional Commits title only, with no body. Never push unless asked to.

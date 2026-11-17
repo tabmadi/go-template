@@ -58,7 +58,8 @@ To build the release binary without entering the shell, run `nix build`. It writ
 ├── internal/
 │   ├── config/       Configuration from defaults and environment variables
 │   └── foo/          Sample package with structured logging
-├── docs/adr/         The decisions: foundations, doc conventions, toolchain
+├── docs/adr/         The decisions of the project: foundations, doc conventions, toolchain
+├── template/         What only the template needs: its contract, checks, and outputs
 ├── .golangci.yml     The linter and formatter set
 ├── flake.nix         The dev shell, the app package, the git hooks, and the checks
 ├── flake.lock        The pinned nixpkgs and inputs
@@ -74,15 +75,25 @@ To build the release binary without entering the shell, run `nix build`. It writ
 
 ## Using this template
 
-1. Create a repository from this template on GitHub.
+Make a new project with Nix. It copies every file except the `template/` folder, which holds what only the template needs:
+
+```bash
+nix flake new -t github:tabmadi/go-template my-project
+```
+
+Then follow the steps that it prints:
+
+1. Run `git init` and `git add -A`. A flake sees only the files that git tracks.
 2. Change the module path in `go.mod` and in the imports to your own.
-3. Replace `internal/foo` with your own packages.
-4. Update the contacts in `SECURITY.md` and the copyright line in `LICENSE`.
-5. Install the [Renovate app](https://github.com/apps/renovate) on the new repository.
+3. Run `nix develop`. It downloads the tools and installs the git hooks.
+4. Replace `internal/foo` with your own packages.
+5. Rewrite this README with the template skeleton from [readme-template](https://github.com/tabmadi/readme-template).
+6. Update the contacts in `SECURITY.md` and the copyright line in `LICENSE`.
+7. Install the [Renovate app](https://github.com/apps/renovate) on the new repository.
 
 ## Decisions
 
-The ADRs in [docs/adr](docs/adr/README.md) record every decision and the reason for it. [ADR-0001](docs/adr/0001-documentation-conventions.md) is the house style for all text.
+The ADRs in [docs/adr](docs/adr/README.md) record every decision and the reason for it. `template/adr/0000-template-contract.md` records what makes this repo a template. [ADR-0001](docs/adr/0001-documentation-conventions.md) is the house style for all text.
 
 ## Contributing
 
