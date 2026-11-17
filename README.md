@@ -10,6 +10,7 @@ A template for a Go application. It follows the [Standard Go Project Layout](htt
 | [golangci-lint](https://golangci-lint.run) | Lint and format |
 | [Nix](https://nixos.org) with flakes | Tool versions, the dev shell, the app package, and the sandboxed checks |
 | [just](https://just.systems) | Tasks |
+| [Zed](https://zed.dev) | The supported editor, with project settings in `.zed/` |
 | [git-hooks.nix](https://github.com/cachix/git-hooks.nix) | Git hooks |
 | [cocogitto](https://docs.cocogitto.io) | Conventional Commits checks |
 | [rumdl](https://github.com/rvben/rumdl) | Markdown lint |
@@ -18,7 +19,7 @@ A template for a Go application. It follows the [Standard Go Project Layout](htt
 
 ## Getting started
 
-1. Install [Nix](https://nixos.org/download) and enable flakes. Optionally, install [direnv](https://direnv.net) with [nix-direnv](https://github.com/nix-community/nix-direnv) to enter the dev shell on `cd`.
+1. Install [Nix](https://nixos.org/download) and enable flakes. For the editor, also install [Zed](https://zed.dev), and [direnv](https://direnv.net) with [nix-direnv](https://github.com/nix-community/nix-direnv). direnv enters the dev shell on `cd`, and Zed loads it through direnv.
 2. Clone the repo and enter the dev shell. The first entry downloads every tool and installs the git hooks:
 
    ```bash
@@ -34,6 +35,10 @@ A template for a Go application. It follows the [Standard Go Project Layout](htt
    ```
 
 To build the release binary without entering the shell, run `nix build`. It writes `result/bin/app`.
+
+## Editor
+
+Open the folder in Zed, and run `direnv allow` once. Zed then uses the language servers and formatters of the dev shell, formats on save, and lists every recipe under `task: spawn`. Any other editor works through the same dev shell.
 
 ## Tasks
 
@@ -63,6 +68,7 @@ To build the release binary without entering the shell, run `nix build`. It writ
 ├── .golangci.yml     The linter and formatter set
 ├── flake.nix         The dev shell, the app package, the git hooks, and the checks
 ├── flake.lock        The pinned nixpkgs and inputs
+├── .zed/             Zed project settings and tasks
 ├── justfile          Tasks
 └── .envrc            Enters the dev shell through direnv
 ```

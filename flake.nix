@@ -135,6 +135,10 @@
             cocogitto
             rumdl
             gitleaks
+            # The language servers and the Nix formatter, for the editor.
+            gopls
+            nixd
+            nixfmt
           ];
           shellHook = (hooks pkgs).shellHook;
         };
