@@ -1,5 +1,10 @@
 version: "2"
 
+# golangci-lint does not look in .config/, so every call passes --config with this path.
+# Paths resolve from go.mod, not from this folder.
+run:
+  relative-path-mode: gomod
+
 issues:
   max-same-issues: 50
 

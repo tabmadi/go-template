@@ -60,9 +60,12 @@ Open the folder in Zed, and run `direnv allow` once. Zed suggests its Nix extens
 ```text
 .
 ├── .config/
+│   ├── cog.toml      Commit types
 │   ├── gitleaks.toml Secret scan rules
+│   ├── golangci.yml  The linter and formatter set
 │   ├── rumdl.toml    Markdown rules
-│   └── taplo.toml    TOML format rules
+│   ├── taplo.toml    TOML format rules
+│   └── yamlfmt.yaml  YAML format rules
 ├── .github/          Issue forms, the CI workflow, Renovate, SECURITY.md, and CODE_OF_CONDUCT.md
 ├── .zed/             Zed project settings and tasks
 ├── cmd/app/          The entry point. It wires the parts together
@@ -72,11 +75,8 @@ Open the folder in Zed, and run `direnv allow` once. Zed suggests its Nix extens
 ├── docs/adr/         The decisions of the project: foundations, doc conventions, toolchain
 ├── template/         What only the template needs: its contract, checks, and outputs
 ├── .envrc            Enters the dev shell through direnv
-├── .golangci.yml     The linter and formatter set
 ├── .justfile         Tasks
-├── .yamlfmt.yaml     YAML format rules
-├── biome.json        JSON format rules
-├── cog.toml          Commit types
+├── biome.json        JSON format rules. Biome cannot load it from .config/
 ├── flake.nix         The dev shell, the app package, the git hooks, and the checks
 ├── flake.lock        The pinned nixpkgs and inputs
 ├── go.mod

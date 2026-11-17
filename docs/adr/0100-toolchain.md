@@ -36,7 +36,7 @@ Nix is the one mechanism for every language. A repo adds its language tools to t
 | --- | --- |
 | Nix with flakes | Tool versions, the dev shell, the app package, and the sandboxed checks |
 | Go | Build, run, and test |
-| golangci-lint | Lint and format, with the linter set in `.golangci.yml` |
+| golangci-lint | Lint and format, with the linter set in `.config/golangci.yml` |
 | `just` | Tasks |
 | Zed | The supported editor, with its project settings in `.zed/` |
 | `git-hooks.nix`, with `prek` | Git hooks, declared in `flake.nix` |
@@ -80,9 +80,11 @@ A recipe that calls a tool runs only inside the dev shell. Outside it, the recip
 
 ### One formatter for each file type
 
-Every text format that git tracks has one formatter in the dev shell. `golangci-lint` formats Go, `rumdl` formats Markdown, `nixfmt` formats Nix, Biome formats JSON and JSONC, Taplo formats TOML, yamlfmt formats YAML, and `just --fmt` formats the `.justfile`. `.editorconfig` sets the indentation and line endings, and each formatter reads it or matches it.
+Every text format that git tracks has one formatter in the dev shell. `golangci-lint` formats Go, `rumdl` formats Markdown, `nixfmt` formats Nix, Biome formats JSON and JSONC, Taplo formats TOML, yamlfmt formats YAML, and `just --fmt` formats the `.justfile`. Go uses tabs, per `gofmt`. Each other formatter config sets two spaces and LF line endings, or the formatter uses them by default. The repo has no `.editorconfig`: the formatters and their checks are the only rules.
 
-A config file that a tool can find in `.config/` lives there. A tool that finds its config only at the repo root keeps it there: `biome.json`, `.yamlfmt.yaml`, `cog.toml`, and the language configs, such as `.golangci.yml`. Taplo and gitleaks read their path from `flake.nix`, which sets it in the dev shell, the checks, and the hooks.
+Every tool config lives in `.config/`. `rumdl` finds its config there by itself. Taplo and gitleaks read their path from an environment variable that `flake.nix` sets in the dev shell, the checks, and the hooks. golangci-lint, yamlfmt, and cog take the path as a flag, so every recipe, check, hook, and Zed setting passes it. The `just` recipes are the one way to run a tool, so a tool that someone calls without the flag is outside the contract.
+
+`biome.json` is the one exception, and it stays at the repo root. Biome finds `.config/biome.json`, but its project scan then reads the same file as a second root config and stops with an error. `(ref: biomejs/biome#7588)`. `go.mod` is not a tool config, so it stays at the root too.
 
 `just format` runs every formatter. Each one also has a check under `checks` in `flake.nix`, so a file that is not formatted fails the gate.
 
@@ -121,7 +123,9 @@ The dev shell holds the language servers and the formatters: `gopls` for Go, `ni
 
 `.zed/settings.json` formats on save only with the formatters of the repo, and turns format on save off for every other language. So Zed and `just format` give the same result. It also selects the language servers. `.zed/tasks.json` runs the `just` recipes. A personal setting, such as a theme, a font, or a keymap, stays in the user settings of Zed.
 
-Other editors work through the same dev shell and `.editorconfig`. The repo commits no config for them, and `.gitignore` excludes their folders. No check depends on the editor.
+`.zed/settings.json` also holds the rules for typing: two spaces, tabs in Go, a final newline, and no trailing whitespace outside Markdown.
+
+Other editors work through the same dev shell. The repo commits no config for them, and `.gitignore` excludes their folders. No check depends on the editor, and `just format` fixes what an editor gets wrong.
 
 ### Nix beyond the toolchain
 
@@ -163,16 +167,17 @@ Renovate needs the Renovate GitHub app on the repository. Without it, the pins g
 - Every tool comes from the dev shell of `flake.nix`. No tool is resolved from outside it.
 - `flake.lock` is committed. Renovate updates it, and the CI gate decides.
 - A language tool is added to the dev shell, never to a second version manager.
-- A linter is disabled by name with a reason in `.golangci.yml`. `(CI: lint-go)`
+- A linter is disabled by name with a reason in `.config/golangci.yml`. `(CI: lint-go)`
 - `go.mod` and `flake.nix` name the same Go line.
 - Every task is a `just` recipe with a doc comment. A recipe that calls a tool runs only inside the dev shell.
 - Every check that CI runs is a derivation under `checks` in `flake.nix`. `(CI: ci)`
 - The git hooks are declared in `flake.nix`, and entering the dev shell installs them.
 - The language servers and formatters of the editor come from the dev shell.
 - Every text format that git tracks has one formatter in the dev shell, and a check in `flake.nix`. `(CI: ci)`
+- Every tool config lives in `.config/`, except `biome.json` at the repo root. A tool that does not find its config there gets the path from `flake.nix` or a flag.
 - The editor formats only with the formatters of the repo.
 - `.zed/` holds project settings only. No check depends on the editor.
 - `just check` passes before a change is finished.
 - `just ci` is the only CI step after setup, and it runs inside `nix develop`. `(CI: ci)`
-- Commit messages and pull request titles follow Conventional Commits with the type set in `cog.toml`. `(ref: Conventional Commits 1.0.0)`
+- Commit messages and pull request titles follow Conventional Commits with the type set in `.config/cog.toml`. `(ref: Conventional Commits 1.0.0)`
 - A workflow never puts event text, such as a pull request title, directly into a `run` script.

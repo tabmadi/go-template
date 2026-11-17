@@ -32,9 +32,9 @@ clean:
 test: in-shell
     go test ./...
 
-# golangci-lint with every linter that .golangci.yml enables
+# golangci-lint with every linter that .config/golangci.yml enables
 lint-go: in-shell
-    golangci-lint run --allow-parallel-runners
+    golangci-lint run --config .config/golangci.yml --allow-parallel-runners
 
 # Markdown structure and formatting, per ADR-0001
 lint-md: in-shell
@@ -54,7 +54,7 @@ lint-toml: in-shell
 
 # YAML format, per ADR-0100
 lint-yaml: in-shell
-    yamlfmt -lint .
+    yamlfmt -conf .config/yamlfmt.yaml -lint .
 
 # .justfile format, per ADR-0100
 lint-just:
@@ -65,12 +65,12 @@ lint: lint-go lint-md lint-secrets lint-json lint-toml lint-yaml lint-just
 
 # Apply every formatter and every safe lint fix
 format: in-shell
-    golangci-lint run --fix --allow-parallel-runners
+    golangci-lint run --config .config/golangci.yml --fix --allow-parallel-runners
     rumdl check --fix .
     nix fmt flake.nix
     biome format --write .
     taplo fmt
-    yamlfmt .
+    yamlfmt -conf .config/yamlfmt.yaml .
     just --fmt
 
 # The fast gate: run it before you finish a change
