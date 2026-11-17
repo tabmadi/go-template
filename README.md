@@ -74,9 +74,9 @@ Open the folder in Zed, and run `direnv allow` once. Zed suggests its Nix extens
 ├── docs/adr/         The decisions of the project: foundations, doc conventions, toolchain
 ├── template/         What only the template needs: its contract, checks, and outputs
 ├── .envrc            Enters the dev shell through direnv
-├── .justfile         Tasks
 ├── flake.nix         The dev shell, the app package, the git hooks, and the checks
 ├── flake.lock        The pinned nixpkgs and inputs
+├── justfile          Tasks
 ├── go.mod
 ├── AGENTS.md
 ├── README.md
