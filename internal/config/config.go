@@ -12,7 +12,7 @@ type Config struct {
 	LogLevel slog.Level
 }
 
-// New creates a Config with default settings and optional LOG_LEVEL env override (DEBUG/INFO/WARN/ERROR).
+// New reads LOG_LEVEL as DEBUG, INFO, WARN, or ERROR. An unset or unknown value keeps INFO.
 func New() *Config {
 	cfg := &Config{
 		LogLevel: slog.LevelInfo,
