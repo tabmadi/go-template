@@ -52,18 +52,22 @@ lint-secrets: in-shell
 lint-data: in-shell
     dprint check
 
+# Nix format, per ADR-0100
+lint-nix: in-shell
+    nixfmt --check $(git ls-files '*.nix')
+
 # justfile format, per ADR-0100
 lint-just:
     just --fmt --check
 
 # Run every linter
-lint: lint-go lint-prose lint-md lint-secrets lint-data lint-just
+lint: lint-go lint-prose lint-md lint-secrets lint-data lint-nix lint-just
 
 # Apply every formatter and every safe lint fix
 format: in-shell
     golangci-lint run --config .config/golangci.yml --fix --allow-parallel-runners
     rumdl check --fix .
-    nix fmt flake.nix
+    nixfmt $(git ls-files '*.nix')
     dprint fmt
     just --fmt
 
