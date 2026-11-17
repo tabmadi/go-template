@@ -1,7 +1,7 @@
 # ADR-0000: Foundations
 
-**Status:** Accepted
-**Decides:** What this repo is, its layout, its Go conventions, and the ADR process itself.
+- **Status:** Accepted
+- **Decides:** What this repo is, its layout, its Go conventions, and the ADR process itself.
 
 ## Context
 
