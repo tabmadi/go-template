@@ -44,14 +44,34 @@ lint-md: in-shell
 lint-secrets: in-shell
     gitleaks dir . --no-banner
 
+# JSON format, per ADR-0100
+lint-json: in-shell
+    biome format .
+
+# TOML format, per ADR-0100
+lint-toml: in-shell
+    taplo fmt --check
+
+# YAML format, per ADR-0100
+lint-yaml: in-shell
+    yamlfmt -lint .
+
+# justfile format, per ADR-0100
+lint-just:
+    just --fmt --check
+
 # Run every linter
-lint: lint-go lint-md lint-secrets
+lint: lint-go lint-md lint-secrets lint-json lint-toml lint-yaml lint-just
 
 # Apply every formatter and every safe lint fix
 format: in-shell
     golangci-lint run --fix --allow-parallel-runners
     rumdl check --fix .
     nix fmt flake.nix
+    biome format --write .
+    taplo fmt
+    yamlfmt .
+    just --fmt
 
 # The fast gate: run it before you finish a change
 check: lint test

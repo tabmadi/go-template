@@ -88,6 +88,31 @@
               entry = "${pkgs.rumdl}/bin/rumdl check";
               files = "\\.md$";
             };
+            json = {
+              enable = true;
+              name = "biome";
+              entry = "${pkgs.biome}/bin/biome format --no-errors-on-unmatched";
+              files = "\\.jsonc?$";
+            };
+            toml = {
+              enable = true;
+              name = "taplo";
+              entry = "${pkgs.taplo}/bin/taplo fmt --check";
+              files = "\\.toml$";
+            };
+            yaml = {
+              enable = true;
+              name = "yamlfmt";
+              entry = "${pkgs.yamlfmt}/bin/yamlfmt -lint";
+              files = "\\.ya?ml$";
+            };
+            justfile = {
+              enable = true;
+              name = "just --fmt";
+              entry = "${pkgs.just}/bin/just --fmt --check";
+              files = "(^|/)justfile$";
+              pass_filenames = false;
+            };
             secrets = {
               enable = true;
               name = "gitleaks";
@@ -135,6 +160,10 @@
             cocogitto
             rumdl
             gitleaks
+            # The formatters of JSON, TOML, and YAML, per ADR-0100.
+            biome
+            taplo
+            yamlfmt
             # The language servers and the Nix formatter, for the editor.
             gopls
             nixd
@@ -144,23 +173,30 @@
         };
       });
 
-      checks = forEachSystem (pkgs: {
-        # Building the package also runs `go test` on every package of the module.
-        build = app pkgs;
-        lint-go = (app pkgs).overrideAttrs (old: {
-          pname = "lint-go";
-          nativeBuildInputs = old.nativeBuildInputs ++ [ pkgs.golangci-lint ];
-          buildPhase = ''
-            export HOME=$TMPDIR GOLANGCI_LINT_CACHE=$TMPDIR/golangci-lint
-            golangci-lint run --allow-parallel-runners
-          '';
-          doCheck = false;
-          installPhase = "touch $out";
-        });
-        lint-md = check pkgs "lint-md" [ pkgs.rumdl ] "rumdl check .";
-        lint-secrets = check pkgs "lint-secrets" [ pkgs.gitleaks ] "gitleaks dir . --no-banner";
-      }
-      // templateScope.checks pkgs);
+      checks = forEachSystem (
+        pkgs:
+        {
+          # Building the package also runs `go test` on every package of the module.
+          build = app pkgs;
+          lint-go = (app pkgs).overrideAttrs (old: {
+            pname = "lint-go";
+            nativeBuildInputs = old.nativeBuildInputs ++ [ pkgs.golangci-lint ];
+            buildPhase = ''
+              export HOME=$TMPDIR GOLANGCI_LINT_CACHE=$TMPDIR/golangci-lint
+              golangci-lint run --allow-parallel-runners
+            '';
+            doCheck = false;
+            installPhase = "touch $out";
+          });
+          lint-md = check pkgs "lint-md" [ pkgs.rumdl ] "rumdl check .";
+          lint-secrets = check pkgs "lint-secrets" [ pkgs.gitleaks ] "gitleaks dir . --no-banner";
+          lint-json = check pkgs "lint-json" [ pkgs.biome ] "biome format --vcs-enabled=false .";
+          lint-toml = check pkgs "lint-toml" [ pkgs.taplo ] "taplo fmt --check";
+          lint-yaml = check pkgs "lint-yaml" [ pkgs.yamlfmt ] "yamlfmt -lint .";
+          lint-just = check pkgs "lint-just" [ pkgs.just ] "just --fmt --check";
+        }
+        // templateScope.checks pkgs
+      );
 
       formatter = forEachSystem (pkgs: pkgs.nixfmt);
     }

@@ -42,6 +42,9 @@ Nix is the one mechanism for every language. A repo adds its language tools to t
 | `git-hooks.nix`, with `prek` | Git hooks, declared in `flake.nix` |
 | cocogitto | Commit message shape |
 | rumdl | Markdown style |
+| Biome | JSON and JSONC format |
+| Taplo | TOML format |
+| yamlfmt | YAML format |
 | gitleaks | Secret scanning |
 | Renovate | Updates to `flake.lock` and to the GitHub Actions |
 
@@ -74,6 +77,12 @@ Nix decides what is installed. A task runner decides what runs. These are two jo
 | `ci` | Runs `nix flake check`. It is exactly what CI runs |
 
 A recipe that calls a tool runs only inside the dev shell. Outside it, the recipe stops with a message, so no tool resolves from `$PATH`.
+
+### One formatter for each file type
+
+Every text format that git tracks has one formatter in the dev shell. `golangci-lint` formats Go, `rumdl` formats Markdown, `nixfmt` formats Nix, Biome formats JSON and JSONC, Taplo formats TOML, yamlfmt formats YAML, and `just --fmt` formats the `justfile`. `.editorconfig` sets the indentation and line endings, and each formatter reads it or matches it.
+
+`just format` runs every formatter. Each one also has a check under `checks` in `flake.nix`, so a file that is not formatted fails the gate.
 
 ### Go
 
@@ -108,7 +117,7 @@ The editor decides how one person types, not what the code is. So the repo suppo
 
 The dev shell holds the language servers and the formatters: `gopls` for Go, `nixd` and `nixfmt` for Nix, and `rumdl` for Markdown. Every editor that loads the dev shell gets them at the pinned version.
 
-`.zed/settings.json` formats on save with the formatters of the repo and selects the language servers. `.zed/tasks.json` runs the `just` recipes. A personal setting, such as a theme, a font, or a keymap, stays in the user settings of Zed.
+`.zed/settings.json` formats on save only with the formatters of the repo, and turns format on save off for every other language. So Zed and `just format` give the same result. It also selects the language servers. `.zed/tasks.json` runs the `just` recipes. A personal setting, such as a theme, a font, or a keymap, stays in the user settings of Zed.
 
 Other editors work through the same dev shell and `.editorconfig`. The repo commits no config for them, and `.gitignore` excludes their folders. No check depends on the editor.
 
@@ -158,6 +167,8 @@ Renovate needs the Renovate GitHub app on the repository. Without it, the pins g
 - Every check that CI runs is a derivation under `checks` in `flake.nix`. `(CI: ci)`
 - The git hooks are declared in `flake.nix`, and entering the dev shell installs them.
 - The language servers and formatters of the editor come from the dev shell.
+- Every text format that git tracks has one formatter in the dev shell, and a check in `flake.nix`. `(CI: ci)`
+- The editor formats only with the formatters of the repo.
 - `.zed/` holds project settings only. No check depends on the editor.
 - `just check` passes before a change is finished.
 - `just ci` is the only CI step after setup, and it runs inside `nix develop`. `(CI: ci)`
