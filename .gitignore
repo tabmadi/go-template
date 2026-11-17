@@ -19,7 +19,7 @@
 # Build files
 bin/
 
-# Planned work stays local
+# Personal notes that stay out of git
 *.local.md
 
 # Nix, per ADR-0100

@@ -27,7 +27,7 @@ The layout follows the [Standard Go Project Layout](https://github.com/golang-st
 
 **The recipe names are a contract.** `setup`, `format`, `lint`, `test`, `check`, and `ci` exist in this repo, per [ADR-0100](0100-toolchain.md). Their names do not change.
 
-**Every decision is an ADR.** An ADR states what is true of the repo. It is law, not a plan. Planned work lives in an untracked `*.local.md` file.
+**Every decision is an ADR.** An ADR states what is true of the repo. It is law, not a plan.
 
 ## Consequences
 
@@ -46,4 +46,3 @@ An ADR names other ADRs only. A link to a README, a guide, or another repo break
 - The recipes `setup`, `format`, `lint`, `test`, `check`, and `ci` exist in this repo.
 - Every ADR carries a `Status`, a one-sentence `Decides` line, and a flat `Rules` section.
 - An ADR links to other ADRs only.
-- Planned work lives in an untracked `*.local.md` file. No committed file links to one.

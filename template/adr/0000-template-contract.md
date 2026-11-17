@@ -26,6 +26,8 @@ A template file may name a project file. A project file never links into `templa
 
 `nix flake new -t github:tabmadi/go-template <dir>` copies the project scope. The `templates` output filters out `template/`, and its welcome text lists the first steps of the new project. The first step renames the module path in `go.mod` and in the imports.
 
+GitHub's template button copies every file, `template/` included. In that copy, `just init` prints the same first steps and removes `template/` with git. The first commit of the project then holds no template scope.
+
 ### What this template holds
 
 The sample code shows the structure. It is not a feature set, and a project replaces `internal/foo` with its own packages.

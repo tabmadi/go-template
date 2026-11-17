@@ -75,7 +75,7 @@ To build the release binary without entering the shell, run `nix build`. It writ
 
 ## Using this template
 
-Make a new project with Nix. It copies every file except the `template/` folder, which holds what only the template needs:
+Make a new project with Nix. It copies every file except the `template/` folder, which holds what only the template needs. This is the preferred way:
 
 ```bash
 nix flake new -t github:tabmadi/go-template my-project
@@ -83,13 +83,22 @@ nix flake new -t github:tabmadi/go-template my-project
 
 Then follow the steps that it prints:
 
-1. Run `git init` and `git add -A`. A flake sees only the files that git tracks.
+1. In the new folder, run `git init` and `git add -A`. A flake sees only the files that git tracks.
 2. Change the module path in `go.mod` and in the imports to your own.
 3. Run `nix develop`. It downloads the tools and installs the git hooks.
 4. Replace `internal/foo` with your own packages.
 5. Rewrite this README with the template skeleton from [readme-template](https://github.com/tabmadi/readme-template).
 6. Update the contacts in `SECURITY.md` and the copyright line in `LICENSE`.
 7. Install the [Renovate app](https://github.com/apps/renovate) on the new repository.
+
+### With the GitHub template button
+
+The button copies every file, the `template/` folder included. Remove it in the first commit:
+
+1. Clone the new repository, and run `nix develop` in it.
+2. Run `just init`. It prints the first steps, and it removes the `template/` folder with git.
+3. Commit the removal.
+4. Follow the printed steps from step 2. Your repository already has git.
 
 ## Decisions
 

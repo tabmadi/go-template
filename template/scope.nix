@@ -33,7 +33,7 @@ in
       welcomeText = ''
         # A new project
 
-        1. Run `git init` and `git add -A`. A flake sees only the files that git tracks.
+        1. In a new folder, run `git init` and `git add -A`. A flake sees only the files that git tracks.
         2. Change the module path in `go.mod` and in the imports to your own.
         3. Run `nix develop`. It downloads the tools and installs the git hooks.
         4. Replace `internal/foo` with your own packages.
