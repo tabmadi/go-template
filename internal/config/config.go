@@ -1,35 +1,76 @@
-// Package config manages application configuration with environment variable support.
+// Package config reads the configuration from the environment and checks it. No other package reads the environment.
 package config
 
 import (
+	"errors"
+	"fmt"
 	"log/slog"
 	"os"
+	"strconv"
 	"strings"
 )
 
-// Config holds application configuration settings including logging.
+// The defaults and limits of the configuration.
+const (
+	DefaultPort = 8080
+	maxPort     = 65535
+)
+
+// ErrInvalid marks a configuration value that the app cannot start with.
+var ErrInvalid = errors.New("invalid configuration")
+
+// Config holds the checked configuration of the app.
 type Config struct {
+	Port     int
 	LogLevel slog.Level
 }
 
-// New reads LOG_LEVEL as DEBUG, INFO, WARN, or ERROR. An unset or unknown value keeps INFO.
-func New() *Config {
-	cfg := &Config{
-		LogLevel: slog.LevelInfo,
-	}
+// FromEnv reads the configuration from the environment of the process.
+func FromEnv() (Config, error) {
+	return Load(os.Getenv)
+}
 
-	if logLevel := os.Getenv("LOG_LEVEL"); logLevel != "" {
-		switch strings.ToUpper(logLevel) {
-		case "DEBUG":
-			cfg.LogLevel = slog.LevelDebug
-		case "INFO":
-			cfg.LogLevel = slog.LevelInfo
-		case "WARN":
-			cfg.LogLevel = slog.LevelWarn
-		case "ERROR":
-			cfg.LogLevel = slog.LevelError
+// Load reads the configuration through getenv. An unset or empty variable takes its default.
+func Load(getenv func(string) string) (Config, error) {
+	cfg := Config{Port: DefaultPort, LogLevel: slog.LevelInfo}
+
+	if value := getenv("PORT"); value != "" {
+		port, err := strconv.Atoi(value)
+		if err != nil || port < 1 || port > maxPort {
+			return Config{}, fmt.Errorf("%w: PORT must be a number from 1 to %d, not %q", ErrInvalid, maxPort, value)
 		}
+
+		cfg.Port = port
 	}
 
-	return cfg
+	if value := getenv("LOG_LEVEL"); value != "" {
+		level, err := parseLevel(value)
+		if err != nil {
+			return Config{}, err
+		}
+
+		cfg.LogLevel = level
+	}
+
+	return cfg, nil
+}
+
+// parseLevel reads one of debug, info, warn, or error, in any case.
+func parseLevel(value string) (slog.Level, error) {
+	switch strings.ToLower(value) {
+	case "debug":
+		return slog.LevelDebug, nil
+	case "info":
+		return slog.LevelInfo, nil
+	case "warn":
+		return slog.LevelWarn, nil
+	case "error":
+		return slog.LevelError, nil
+	default:
+		return slog.LevelInfo, fmt.Errorf(
+			"%w: LOG_LEVEL must be debug, info, warn, or error, not %q",
+			ErrInvalid,
+			value,
+		)
+	}
 }

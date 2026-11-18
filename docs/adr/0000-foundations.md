@@ -60,6 +60,7 @@ This repo is a Go application. It builds one static binary from `cmd/app`. The l
 | `cmd/app/` | The entry point. It wires the parts and holds no business logic |
 | `internal/` | All other code. No other module can import it |
 | `internal/config/` | The configuration: defaults in code, overridden by environment variables |
+| `internal/server/` | The HTTP routes |
 
 **Configuration is read in one place.** Only `internal/config` reads the environment.
 

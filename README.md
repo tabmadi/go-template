@@ -37,6 +37,12 @@ A template for a Go application. It follows the [Standard Go Project Layout](htt
    just run
    ```
 
+4. Call it from another terminal:
+
+   ```bash
+   curl http://localhost:8080/health
+   ```
+
 To build the release binary without entering the shell, run `nix build`. It writes `result/bin/app`.
 
 ## Editor
@@ -70,10 +76,10 @@ Open the folder in Zed, and run `direnv allow` once. Zed suggests its Nix extens
 │   └── rumdl.toml    Markdown rules
 ├── .github/          Issue forms, the CI workflow, Renovate, SECURITY.md, and CODE_OF_CONDUCT.md
 ├── .zed/             Zed project settings and tasks
-├── cmd/app/          The entry point. It wires the parts together
+├── cmd/app/          The entry point. It wires the parts together and stops the server on a signal
 ├── internal/
-│   ├── config/       Configuration from defaults and environment variables
-│   └── foo/          Sample package with structured logging
+│   ├── config/       Configuration from defaults and environment variables, checked at startup
+│   └── server/       The HTTP routes
 ├── docs/adr/         The decisions of the project: foundations, doc conventions, toolchain
 ├── template/         What only the template needs: its contract, checks, and outputs
 ├── .envrc            Enters the dev shell through direnv
@@ -90,7 +96,10 @@ Open the folder in Zed, and run `direnv allow` once. Zed suggests its Nix extens
 
 | Variable | Description | Default |
 | --- | --- | --- |
-| `LOG_LEVEL` | One of `DEBUG`, `INFO`, `WARN`, or `ERROR` | `INFO` |
+| `PORT` | The port the server binds, from 1 to 65535 | `8080` |
+| `LOG_LEVEL` | One of `debug`, `info`, `warn`, or `error`, in any case | `info` |
+
+An unset or empty variable takes its default. A bad value stops the app at startup, with the error on standard error.
 
 ## Starting a project
 
@@ -105,7 +114,7 @@ Then follow the steps that it prints:
 1. In the new folder, run `git init` and `git add -A`. A flake sees only the files that git tracks.
 2. Change the module path in `go.mod` and in the imports to your own.
 3. Run `nix develop`. It downloads the tools and installs the git hooks.
-4. Replace `internal/foo` with your own packages.
+4. Replace the sample service in `cmd/app` and `internal/` with your own packages.
 5. Rewrite this README for the project, with the sections that ADR-0001 sets for its kind of repo.
 6. Update the contacts in `.github/SECURITY.md` and the copyright line in `LICENSE`.
 7. Install the [Renovate app](https://github.com/apps/renovate) on the new repository.
