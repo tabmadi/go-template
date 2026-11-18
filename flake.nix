@@ -1,4 +1,4 @@
-# The toolchain, the git hooks, the app package, and the checks, per ADR-0100. The tabnix module
+# The toolchain, the git hooks, the app package, and the checks, per ADR-0100 and ADR-0110. The tabnix module
 # holds every shared part, and this file adds the Go parts.
 {
   description = "A Go application with the Standard Go Project Layout";
