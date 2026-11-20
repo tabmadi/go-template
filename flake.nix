@@ -56,8 +56,10 @@
           # A fix stops the commit, so the engineer reviews the change and stages it.
           tabnix.hooks.go = {
             name = "golangci-lint";
+            # The hook carries the Go of the dev shell. GOTOOLCHAIN=local stops Go from downloading another toolchain
+            # when go.mod names a newer one.
             entry = "${pkgs.writeShellScript "golangci-lint-fix" ''
-              export PATH=${go}/bin:$PATH
+              export PATH=${go}/bin:$PATH GOTOOLCHAIN=local
               exec ${pkgs.golangci-lint}/bin/golangci-lint run ${golangci} --fix --allow-parallel-runners
             ''}";
             files = "\\.go$";
