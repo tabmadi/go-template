@@ -41,6 +41,12 @@ linters:
     - wsl # wsl_v5 is better
 
   settings:
+    gocritic:
+      enabled-checks:
+        - ruleguard
+      settings:
+        ruleguard:
+          rules: "@tabnix-go-rules@"
     govet:
       enable-all: true
       disable:

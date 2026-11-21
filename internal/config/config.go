@@ -34,17 +34,24 @@ func FromEnv() (Config, error) {
 func Load(getenv func(string) string) (Config, error) {
 	cfg := Config{Port: DefaultPort, LogLevel: slog.LevelInfo}
 
-	if value := getenv("PORT"); value != "" {
-		port, err := strconv.Atoi(value)
+	portValue := getenv("PORT")
+	if portValue != "" {
+		port, err := strconv.Atoi(portValue)
 		if err != nil || port < 1 || port > maxPort {
-			return Config{}, fmt.Errorf("%w: PORT must be a number from 1 to %d, not %q", ErrInvalid, maxPort, value)
+			return Config{}, fmt.Errorf(
+				"%w: PORT must be a number from 1 to %d, not %q",
+				ErrInvalid,
+				maxPort,
+				portValue,
+			)
 		}
 
 		cfg.Port = port
 	}
 
-	if value := getenv("LOG_LEVEL"); value != "" {
-		level, err := parseLevel(value)
+	levelValue := getenv("LOG_LEVEL")
+	if levelValue != "" {
+		level, err := parseLevel(levelValue)
 		if err != nil {
 			return Config{}, err
 		}

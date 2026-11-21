@@ -4,6 +4,10 @@
   imports = [ inputs.tabnix.flakeModules.template ];
 
   tabnix.template = {
+    extraVoice = [
+      "github\\.com/tabmadi"
+      "blueprints"
+    ];
     description = "A Go application with the Standard Go Project Layout, every golangci-lint linter, and a static binary";
     welcomeText = ''
       # A new project

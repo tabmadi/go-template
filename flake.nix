@@ -11,7 +11,7 @@
     };
     # A new version is a new tag here.
     tabnix = {
-      url = "github:tabmadi/tabnix/v0.10.0";
+      url = "github:tabmadi/tabnix/v0.15.0";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-parts.follows = "flake-parts";
     };
@@ -23,22 +23,25 @@
       # The template scope adds its own checks and outputs. A copy has no template/ folder, so it adds nothing.
       imports = [
         tabnix.flakeModules.default
+        tabnix.flakeModules.go
       ]
       ++ inputs.nixpkgs.lib.optional (builtins.pathExists ./template/scope.nix) ./template/scope.nix;
 
       perSystem =
-        { pkgs, ... }:
+        { config, pkgs, ... }:
         let
           # The Go line of the repo. go.mod names the same line.
           go = pkgs.go_1_27;
           golangci = "--config .config/golangci.yml";
+          # The wrapper of the tabnix go module, which gives the config the path of the ruleguard rules.
+          linter = "${config.tabnix.go.golangci}/bin/golangci-lint";
 
-          # The static, stripped binary. The module has no dependencies, so it has no vendor hash.
+          # The static, stripped binary. The only dependency is the ruleguard DSL, which the binary does not link.
           app = pkgs.buildGo127Module {
             pname = "app";
             version = "0.0.0";
             src = ./.;
-            vendorHash = null;
+            vendorHash = "sha256-Fps7U7ORVPaOloJCAiz9sxqinZIxQmYxPv7eQoiR4hk=";
             env.CGO_ENABLED = "0";
             ldflags = [
               "-s"
@@ -49,7 +52,6 @@
         {
           tabnix.packages = [
             go
-            pkgs.golangci-lint
             pkgs.gopls
           ];
 
@@ -60,7 +62,7 @@
             # when go.mod names a newer one.
             entry = "${pkgs.writeShellScript "golangci-lint-fix" ''
               export PATH=${go}/bin:$PATH GOTOOLCHAIN=local
-              exec ${pkgs.golangci-lint}/bin/golangci-lint run ${golangci} --fix --allow-parallel-runners
+              exec ${linter} run ${golangci} --fix --allow-parallel-runners
             ''}";
             files = "\\.go$";
             pass_filenames = false;
@@ -72,7 +74,7 @@
           checks.build = app;
           checks.lint-go = app.overrideAttrs (old: {
             pname = "lint-go";
-            nativeBuildInputs = old.nativeBuildInputs ++ [ pkgs.golangci-lint ];
+            nativeBuildInputs = old.nativeBuildInputs ++ [ config.tabnix.go.golangci ];
             buildPhase = ''
               export HOME=$TMPDIR GOLANGCI_LINT_CACHE=$TMPDIR/golangci-lint
               golangci-lint run ${golangci} --allow-parallel-runners
