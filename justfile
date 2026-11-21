@@ -82,6 +82,22 @@ ci:
 cache-push: in-shell
     nix-cache-push
 
+# Run Renovate over this repository, per ADR-0102. The renovate workflow calls it
+ci-renovate: in-shell
+    nix run --inputs-from . nixpkgs#renovate
+
+# Write the files that follow a dependency change, per ADR-0102. A fake hash makes Nix print the real one
+deps-sync: in-shell
+    #!/usr/bin/env bash
+    set -euo pipefail
+    fake="sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    current="$(sed -nE 's/.*vendorHash = "(sha256-[^"]+)".*/\1/p' flake.nix)"
+    sed -i "s|${current}|${fake}|" flake.nix
+    log="$(nix build .#default.goModules --no-link 2>&1 || true)"
+    got="$(sed -nE 's/.*got: +(sha256-[A-Za-z0-9+/=]+).*/\1/p' <<<"$log" | head -1)"
+    sed -i "s|${fake}|${got:-$current}|" flake.nix
+    test -n "$got"
+
 [private]
 in-shell:
     @test -n "${IN_NIX_SHELL:-}" || { echo "Enter the dev shell first: run nix develop, or allow direnv." >&2; exit 1; }
